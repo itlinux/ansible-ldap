@@ -2,6 +2,8 @@
 
 === Requirements
 
+NOTE: Based on chrisolido/ansible-ldap, I rewrote most of the stuff but thanks for the framework. 
+
 Install epel-release
 You need it before you run the playbook 
 ** Example: search for user Remo
