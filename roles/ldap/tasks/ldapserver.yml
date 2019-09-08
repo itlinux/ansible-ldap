@@ -17,6 +17,7 @@
       - openldap-servers-sql
       - openldap-devel
       - nss-pam-ldapd
+      - policycoreutils
 
   - name: Pip install pexpect
     pip:

@@ -2,10 +2,13 @@
 
 === Requirements
 
-NOTE: Based on chrisolido/ansible-ldap, I rewrote most of the stuff but thanks for the framework. 
+NOTE: Based on chrisolido/ansible-ldap, I rewrote most of the stuff but thanks for the framework.
 
 Install epel-release
-You need it before you run the playbook 
+Do not disable SELinux the playbook will fail
+
+You need it before you run the playbook
+
 ** Example: search for user Remo
 
 ----
@@ -50,7 +53,7 @@ ldapsearch -x cn=remo -b dc=demoavi,dc=com
 ** Example: check  user info like group id etc
 
 ----
-getent passwd remo 
+getent passwd remo
 
 remo:x:9999:100:remo [Admin (at)  demoavi]:/home/remo:/bin/bash
 ----
@@ -80,5 +83,5 @@ run the script setpass.sh
 
 
 NOTE: If you rerun the playbook you will see some warning because the user already exist.
-So I added to continue since that will require lots more work and I did not have much time. 
-It can be improved. Submit PR and I can push those changes up. 
+So I added to continue since that will require lots more work and I did not have much time.
+It can be improved. Submit PR and I can push those changes up.
