@@ -1,0 +1,72 @@
+== Openldap for CentOS / RHEL 7
+
+=== Requirements
+
+Install epel-release
+You need it before you run the playbook 
+** Example: search for user Remo
+
+---
+ldapsearch -x cn=remo -b dc=demoavi,dc=com
+# extended LDIF
+#
+# LDAPv3
+# base <dc=demoavi,dc=com> with scope subtree
+# filter: cn=remo
+# requesting: ALL
+#
+
+# remo, People, demoavi.com
+dn: uid=remo,ou=People,dc=demoavi,dc=com
+objectClass: top
+objectClass: account
+objectClass: posixAccount
+objectClass: shadowAccount
+cn: remo
+uid: remo
+uidNumber: 9999
+gidNumber: 100
+homeDirectory: /home/remo
+loginShell: /bin/bash
+gecos: remo [Admin (at)  demoavi]
+shadowLastChange: 17058
+shadowMin: 0
+shadowMax: 99999
+shadowWarning: 7
+userPassword:: e1NTSEF9YzNWVnJjOWQzSFlNcUpnbTFwWURMK3Z2dHhMY3pac1c=
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1
+---
+
+** Example: check  user info like group id etc
+---
+getent passwd remo
+remo:x:9999:100:remo [Admin (at)  demoavi]:/home/remo:/bin/bash
+---
+
+
+== PHPLDAPADMIN LOGIN
+
+The webuser is your ip address/ldapadmin
+It works on https and http
+---
+cn=ldapadm,dc=demoavi,dc=com
+---
+
+== Adding a User
+if you want to add more user you can just edit the file user3.ldif  and rerun the script
+
+---
+run the script adduser2ldap.sh
+---
+
+Once the user is added make sure you set the password
+
+---
+run the script setpass.sh
+---

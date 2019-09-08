@@ -288,14 +288,14 @@ $servers->newServer('ldap_pla');
 
 /* A convenient name that will appear in the tree viewer and throughout
    phpLDAPadmin to identify this LDAP server to users. */
-$servers->setValue('server','name','Cartarck Local LDAP Server');
+//$servers->setValue('server','name','DemoAvi Local LDAP Server');
 
 /* Examples:
    'ldap.example.com',
    'ldaps://ldap.example.com/',
    'ldapi://%2fusr%local%2fvar%2frun%2fldapi'
            (Unix socket at /usr/local/var/run/ldap) */
-// $servers->setValue('server','host','127.0.0.1');
+$servers->setValue('server','host','127.0.0.1');
 
 /* The port your LDAP server listens on (no quotes). 389 is standard. */
 // $servers->setValue('server','port',389);

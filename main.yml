@@ -1,9 +1,7 @@
 ---
-- hosts: all
+- hosts: ldapserver
   gather_facts: no
-  tasks:
-
-    - import_playbook: ldapserver.yml
-    - import_playbook: phpldap.yml
-    - import_playbook: ldapclient.yml
-
+  remote_user: root
+  roles:
+    - ldap
+  

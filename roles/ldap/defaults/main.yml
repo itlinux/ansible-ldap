@@ -1,0 +1,9 @@
+LDAPUSER: remo
+LDAPPASS: redhat
+LDAPSERVER: 192.168.37.128
+ldap_server_ip:  192.168.37.128
+ldap_domain: demoavi
+ldap_domain_dot: com
+LDPPASSWORD: redhat
+USERPASSWORD: redhat
+useraccount: remo

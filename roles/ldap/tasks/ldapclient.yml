@@ -1,0 +1,12 @@
+---
+  - name:  Add the client machine to LDAP server for single sign-on
+    command: authconfig --enableldap --enableldapauth --ldapserver=localhost --ldapbasedn=dc="{{ ldap_domain }}",dc="{{ ldap_domain_dot }}" --enablemkhomedir --update
+    tags: auth
+  
+  - name: Restart LDAP Client
+    systemd:
+      state: restarted
+      daemon_reload: yes
+      name: nslcd
+    tags: auth
+  

@@ -1,0 +1,136 @@
+---
+  - name: Make an host entry on each machine in /etc/hosts
+    template:
+     src: templates/hosts
+     dest: /etc/hosts
+
+  - name: Install OpenLDAP Packages
+    yum:
+     name: "{{ packages }}"
+    vars:
+     packages:
+      - python-pip
+      - openldap
+      - compat-openldap
+      - openldap-clients
+      - openldap-servers
+      - openldap-servers-sql
+      - openldap-devel
+      - nss-pam-ldapd
+
+  - name: Pip install pexpect
+    pip:
+     name:
+      - pexpect
+      - PyOpenSSL
+
+  - name: Start the LDAP service and enable it for the auto start of service on system boot
+    systemd:
+     name: slapd
+     state: started
+     daemon_reload: true
+
+  - name: Setup LDAP admin password
+    shell: slappasswd -s "{{ LDPPASSWORD }}"
+    register: root_password
+
+  - name: Configure OpenLDAP db.ldif file
+    template:
+     src: templates/db.ldif
+     dest: /root/openldap/
+
+  - name: Send the configuration db.ldif to the LDAP server
+    command: ldapmodify -Y EXTERNAL  -H ldapi:/// -f /root/openldap/db.ldif
+
+  - name: Configure OpenLDAP monitor.ldif file
+    template:
+     src: templates/monitor.ldif
+     dest: /root/openldap/
+
+  - name: Send the configuration monitor.ldif to the LDAP server
+    command: ldapmodify -Y EXTERNAL  -H ldapi:/// -f /root/openldap/monitor.ldif
+
+  - name: LDAP Cert
+    template:
+     src: templates/certificate.ldif
+     dest: /root/openldap/
+
+  - name: Create self-signed certificate, if configured.
+    command: >
+       openssl req -x509 -nodes -subj '/CN={{ ldap_domain }}.{{ldap_domain_dot}}' -days 365
+       -newkey rsa:4096 -sha256 -keyout /etc/openldap/certs/{{ldap_domain}}-key.pem -out /etc/openldap/certs/{{ldap_domain}}-cert.pem 
+
+  - name: Chown PEM for Cert
+    file:
+     path: /etc/openldap/certs/{{ item }}
+     owner: ldap
+     group: ldap
+     mode: '0644'
+    with_items:
+     - "{{ ldap_domain }}-key.pem"
+     - "{{ ldap_domain }}-cert.pem"
+
+  - name: Set up LDAP database
+    command: cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG
+
+  - name: Chage owner of the files copied
+    file:
+     path: /var/lib/ldap/
+     state: directory
+     recurse: true
+     owner: ldap
+     group: ldap
+
+  - name: Add the cosine and nis LDAP schemas
+    ignore_errors: true
+    command: "{{ item }}"
+    with_items:
+     - ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/cosine.ldif
+     - ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/nis.ldif
+     - ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/inetorgperson.ldif
+
+  - name: Configure OpenLDAP base.ldif file
+    ignore_errors: true
+    template:
+     src: templates/base.ldif
+     dest: /root/openldap/
+  - name: Send the configuration base.ldif to the LDAP server
+    ignore_errors: true
+    expect:
+     command: ldapadd -x -W -D "cn=ldapadm,dc={{ ldap_domain }},dc={{ ldap_domain_dot }}" -f /root/openldap/base.ldif
+     responses:
+      (?i)password: "{{ LDPPASSWORD }}"
+
+  - name: Create LDAP user
+    template:
+     src: templates/user_remo.ldif
+     dest: /root/openldap/
+  - name: Create a new user called "{{ useraccount }}"in OpenLDAP directory
+    expect:
+     command: ldapadd -x -W -D "cn=ldapadm,dc={{ ldap_domain }},dc={{ ldap_domain_dot }}" -f /root/openldap/user_remo.ldif
+     responses:
+        (?i)password: "{{ LDPPASSWORD }}"
+
+  - name: Assign password to User
+    expect:
+     command: ldappasswd -s "{{ USERPASSWORD }}" -W -D "cn=ldapadm,dc={{ldap_domain}},dc={{ ldap_domain_dot }}" -x "uid={{useraccount}},ou=People,dc={{ ldap_domain }},dc={{ldap_domain_dot}}"
+     responses:
+      (?i)password: "{{ USERPASSWORD }}"
+
+  - name: Add the LDAP service to the firewall (TCP 389)
+    command: "{{ item }}"
+    with_items:
+     - firewall-cmd --permanent --add-service=ldap
+     - firewall-cmd --reload
+
+  - name: Enable LDAP logging
+    lineinfile:
+     path: /etc/rsyslog.conf
+     line: local4.* /var/log/ldap.log
+     state: present
+     create: true
+
+  - name: Restart the rsyslog service
+    systemd:
+     name: rsyslog
+     state: restarted

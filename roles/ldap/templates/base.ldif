@@ -1,0 +1,17 @@
+dn: dc="{{ ldap_domain }}",dc="{{ldap_domain_dot}}"
+dc:  demoavi
+objectClass: top
+objectClass: domain
+
+dn: cn=ldapadm,dc={{ldap_domain}},dc={{ldap_domain_dot}}
+objectClass: organizationalRole
+cn: ldapadm
+description: LDAP Manager
+
+dn: ou=People,dc="{{ldap_domain}}",dc="{{ldap_domain_dot}}"
+objectClass: organizationalUnit
+ou: People
+
+dn: ou=Group,dc="{{ldap_domain}}",dc="{{ldap_domain_dot}}"
+objectClass: organizationalUnit
+ou: Group

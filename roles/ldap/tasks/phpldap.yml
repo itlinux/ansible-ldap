@@ -1,0 +1,36 @@
+---
+- name: Enable EPEL repository
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - mod_ssl
+      - phpldapadmin
+  tags: web
+
+- name: Copy phpldapadmin.conf
+  template:
+    src: files/phpldapadmin.conf
+    dest: /etc/httpd/conf.d/phpldapadmin.conf
+  tags: web
+
+- name: Restarting HTTPD
+  systemd:
+    state: started
+    name: httpd
+  tags: web
+
+- name: Configure the FirewallD
+  command: "{{ item }}"
+  with_items:
+    - firewall-cmd --permanent --zone=public --add-service=http
+    - firewall-cmd --permanent --zone=public --add-service=https
+    - firewall-cmd --reload
+    - setsebool -P httpd_can_connect_ldap on
+  tags: web
+
+- name: Copy config.php
+  template:
+    src: files/config.php
+    dest: /etc/phpldapadmin/config.php
+  tags: web

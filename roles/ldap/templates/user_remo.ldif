@@ -1,15 +1,15 @@
-dn: uid=bogs,ou=People,dc= cartrack,dc=local
+dn: uid=remo,ou=People,dc={{ldap_domain}},dc={{ldap_domain_dot}}
 objectClass: top
 objectClass: account
 objectClass: posixAccount
 objectClass: shadowAccount
-cn: bogs
-uid: bogs
+cn: remo
+uid: remo
 uidNumber: 9999
 gidNumber: 100
-homeDirectory: /home/bogs
+homeDirectory: /home/remo
 loginShell: /bin/bash
-gecos: bogs [Admin (at)  cartrack]
+gecos: remo [Admin (at)  demoavi]
 userPassword: {crypt}x
 shadowLastChange: 17058
 shadowMin: 0

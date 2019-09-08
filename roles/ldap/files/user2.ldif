@@ -1,0 +1,17 @@
+dn: uid=ciao,ou=People,dc=demoavi,dc=com
+objectClass: top
+objectClass: account
+objectClass: posixAccount
+objectClass: shadowAccount
+cn: ciao
+uid: ciao
+uidNumber: 9998
+gidNumber: 500
+homeDirectory: /home/ciao
+loginShell: /bin/bash
+gecos: Some information for that user
+userPassword: {crypt}x
+shadowLastChange: 17024
+shadowMin: 0
+shadowMax: 99999
+shadowWarning: 7

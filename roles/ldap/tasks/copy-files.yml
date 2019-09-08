@@ -1,0 +1,15 @@
+---
+- name: Copy files
+  copy:
+    src: "{{ item }}"
+    dest: /root/openldap/
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - files/checkuser.sh
+    - files/deluser.sh
+    - files/setpass.sh
+    - files/user2.ldif
+    - files/adduser2ldap.sh
+  tags: extrafiles

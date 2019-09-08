@@ -1,0 +1,9 @@
+---
+- name: Setting Up the Ldap Server
+  include: ldapserver.yml
+- name: Setting up the Ldap Client
+  include: ldapclient.yml
+- name: Setup PHPLDAP Web Interface
+  include: phpldap.yml
+- name: copy extra files
+  include: copy-files.yml
