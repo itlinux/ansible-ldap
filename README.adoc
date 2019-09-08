@@ -6,7 +6,8 @@ Install epel-release
 You need it before you run the playbook 
 ** Example: search for user Remo
 
----
+----
+
 ldapsearch -x cn=remo -b dc=demoavi,dc=com
  # extended LDIF
  #
@@ -41,14 +42,16 @@ ldapsearch -x cn=remo -b dc=demoavi,dc=com
 
  # numResponses: 2
  # numEntries: 1
----
+----
+
 
 ** Example: check  user info like group id etc
 
 ---
-getent passwd remo
+getent passwd remo 
+
 remo:x:9999:100:remo [Admin (at)  demoavi]:/home/remo:/bin/bash
----
+
 
 
 == PHPLDAPADMIN LOGIN
@@ -57,14 +60,18 @@ The webuser is your ip address/ldapadmin
 It works on https and http
 
 ---
+
 cn=ldapadm,dc=demoavi,dc=com
+
 ---
 
 == Adding a User
 if you want to add more user you can just edit the file user3.ldif  and rerun the script
 
 ---
+
 run the script adduser2ldap.sh
+
 ---
 
 Once the user is added make sure you set the password
